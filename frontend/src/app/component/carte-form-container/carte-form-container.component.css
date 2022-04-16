@@ -1,0 +1,14 @@
+.map-container{
+    flex-grow: 2;
+    min-width: 65%;
+}
+
+.course-form{
+    display: flex;
+    flex-direction: column;
+    min-width: 35%;
+    flex-grow: 0;
+}
+
+
+

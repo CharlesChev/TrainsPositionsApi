@@ -1,0 +1,86 @@
+<h1>
+    <p>RECHERCHE PAR COURSE</p>
+</h1>
+
+<mat-radio-group aria-label="Select an option" class="flexradio">
+    <mat-radio-button class="flexradiobutton" value="Une course" (change)="onChange($event)" checked>Une course
+    </mat-radio-button>
+    <mat-radio-button class="flexradiobutton" value="Plusieurs courses" (change)="onChange($event)">Une course sur
+        plusieurs jours</mat-radio-button>
+        <mat-radio-button class="flexradiobutton" value="Une position" (change)="onChange($event)">Une position d'une course à un horaire
+        </mat-radio-button>
+</mat-radio-group>
+
+<form class="flexform" (ngSubmit)="courseForm.valid && onSubmit()" #courseForm="ngForm">
+
+    <mat-form-field class="maxwidthfield form-control" appearance="fill">
+        <mat-label>Numero de Course</mat-label>
+        <input #course="ngModel" matInput value="" [(ngModel)]="numCourse" (change)="onNumChange($event)" name="numCourse" required>
+    </mat-form-field>
+    <div *ngIf="courseForm.submitted && course.errors?.['required']" class="errorMess">Le numero de course est requis.
+    </div>
+    <div *ngIf="numCaracterCheck === false" class="errorMess">Le numero de course ne contient pas de caractères spéciaux
+    </div>
+
+    <ng-template [ngIf]="uneCourse">
+        <mat-form-field class="maxwidthfield" appearance="fill">
+            <mat-label>Choisissez une date</mat-label>
+            <input #dateSelected="ngModel" id="date" matInput [matDatepicker]="picker" [(ngModel)]="date" name="date"
+                required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <div *ngIf="courseForm.submitted && dateSelected.errors?.['required']" class="errorMess">Une date est requise.
+        </div>
+    </ng-template>
+
+    <ng-template [ngIf]="uneCoursePlusieursJour">
+        <mat-form-field class="maxwidthfield" appearance="fill">
+            <mat-label>Entrez une période</mat-label>
+            <mat-date-range-input id="periode" [rangePicker]="rangePicker">
+                <input #start="ngModel" matStartDate [(ngModel)]="startDate" name="startDate" required>
+                <input #end="ngModel" matEndDate [(ngModel)]="endDate" name="endDate" required>
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #rangePicker>
+                <mat-date-range-picker-actions>
+                    <button mat-button matDateRangePickerCancel>Retour</button>
+                    <button mat-raised-button color="primary" matDateRangePickerApply>Valider</button>
+                </mat-date-range-picker-actions>
+            </mat-date-range-picker>
+        </mat-form-field>
+        <div *ngIf="courseForm.submitted && (start.errors?.['required'] || end.errors?.['required'])" class="errorMess">
+            Une période est requise.</div>
+    </ng-template>
+
+    <ng-template [ngIf]="unePositionDuneCourse">
+        <mat-form-field appearance="fill" class="maxwidthfield">
+            <mat-label>Choisissez une date et une heure</mat-label>
+            <input #dateheure="ngModel" id="dateheure" [(ngModel)]="dateTime" name="dateTime" matInput
+                [ngxMatDatetimePicker]="timepicker" [min]="null" [max]="null" required>
+            <mat-datepicker-toggle matSuffix [for]="$any(timepicker)"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #timepicker [showSpinners]="true" [showSeconds]="false" [stepHour]="1"
+                [stepMinute]="1" [stepSecond]="1" [touchUi]="false" [enableMeridian]="false" [disableMinute]="false"
+                [hideTime]="false">
+            </ngx-mat-datetime-picker>
+        </mat-form-field>
+        <div *ngIf="courseForm.submitted && (dateheure.errors?.['required'] || dateheure.errors?.['required'])"
+            class="errorMess">Une date et une heure sont requises.</div>
+    </ng-template>
+
+    <mat-form-field appearance="fill" class="maxwidthfieldenv">
+        <mat-label>Environnement</mat-label>
+        <mat-select #selectenv="ngModel" [(ngModel)]="env" name="env" required>
+            <mat-option *ngFor="let env of envs" [value]="env.value">
+                {{env.viewValue}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div *ngIf="courseForm.submitted  && selectenv.errors?.['required']" class="errorMess">Un environement est requis.</div>
+
+    <div class="flexbutton">
+        <button mat-stroked-button class="formbutton" color="primary" type="submit"
+            appearance="standard">Rechercher</button>
+    </div>
+
+</form>
